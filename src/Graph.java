@@ -51,18 +51,18 @@ public class Graph{
 		public ArrayList<Edge> getEdges(){
 			return edges;
 		}
-		public ArrayList<String> citiesReachableTimeNode(int time,ArrayList<String> prevResults){
+		public ArrayList<String> citiesReachableTimeNode(int time,ArrayList<String> citiesVisited){
 			
 			ArrayList<String> result = new ArrayList<String>();
 			for(Edge e: G.get(this.Label).edges) {
 				
 				if(e.time <= time) {
 					
-					if(!prevResults.contains(e.EndLocation)) {
+					if(!citiesVisited.contains(e.EndLocation)) {
 						
 						result.add(e.EndLocation);
-						prevResults.add(e.EndLocation);
-						result.addAll(G.get(e.EndLocation).citiesReachableTimeNode(time-e.time, prevResults));
+						citiesVisited.add(e.EndLocation);
+						result.addAll(G.get(e.EndLocation).citiesReachableTimeNode(time-e.time, citiesVisited));
 					}
 					
 				}
@@ -70,7 +70,29 @@ public class Graph{
 			}
 			return result;
 		}
+		public ArrayList<String> citiesReachableDistanceNode(int distance,ArrayList<String> citiesVisited){
+			
+			ArrayList<String> result = new ArrayList<String>();
+			for(Edge e: G.get(this.Label).edges) {
+				
+				if(e.distance <= distance) {
+					//System.out.println(this.Label+"==>"+e.EndLocation);
+					if(!citiesVisited.contains(e.EndLocation)) {
+						result.add(e.EndLocation);
+						
+						citiesVisited.add(e.EndLocation);
+					}
+					//System.out.println(e.EndLocation+":distance:"+e.distance);
+					result.addAll(G.get(e.EndLocation).citiesReachableDistanceNode(distance-e.distance, citiesVisited));
+					
+				}
+				
+			}
+			return result;
+		}
 
+	
+	
 	}
 	
 	Map<String, Node> G = null;
@@ -108,6 +130,14 @@ public class Graph{
 		return G.get(start).citiesReachableTimeNode(time, new ArrayList<String>(Arrays.asList(start)));
 	
 	}
+	public ArrayList<String> citiesReachableDistance(String start, int distance){
+		if(!G.containsKey(start)) {
+			throw new IllegalArgumentException("the city - "+start+" does not exsist on map.");
+		}
+		return G.get(start).citiesReachableDistanceNode(distance, new ArrayList<String>(Arrays.asList(start)));
+	
+	}
+	
 	public String toString() {
 		String graph = "";
 		for(String key: G.keySet()) {
