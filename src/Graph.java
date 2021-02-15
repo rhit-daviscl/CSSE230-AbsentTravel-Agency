@@ -1,38 +1,40 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class Graph{
-	public class Edge {
-		Node n;
-		int w;
-		public Edge(Node n, int w) {
-			this.n = n;
-			this.w = w;
+	
+	public class Edge{
+		public int distance;
+		public int time;
+		public String EndLocation;
+		public Edge(int d, int t, String endLocation) {
+			this.distance = d;
+			this.EndLocation = endLocation;
+			this.time = t;
 		}
-
-		public int getTime(Node n) {
-			return n.timeCost;
-		}
-		public int getDistance(Node n) {
-			return n.distanceCost;
+		public String toString() {
+			String str = "\n==> distance:"+distance+"==> time:"+time+"==>"+EndLocation;
+			
+			
+			return str;
 		}
 	}
+	
 	public class Node {
 		public String Label;
 		public int distanceCost;
 		public int timeCost;
-		private String attachedNode;
-
-		public Node(String s,String e, int t, int d) {
+		public ArrayList<Edge> edges;
+		public Node(String s) {
 			this.Label = s;
-			this.attachedNode = e;
-			this.distanceCost = d;
-			this.timeCost = t;
+			this.edges = new ArrayList<Edge>();
 		}
 		public String toString() {
-			return "|"+Label+"-->distance:"+distanceCost+" mile(s) -->time:"+timeCost+" hr(s) -->:"+attachedNode;
+			return edges.toString();
 		}
 
 		public void setName(String newName) {
@@ -41,33 +43,80 @@ public class Graph{
 		public int hashCode() {
 			return Label.hashCode();
 		}
+		public void addEdge (String End,int d, int t ) {
+
+			Edge e = new Edge(d,t,End);
+			this.edges.add(e);
+		}
+		public ArrayList<Edge> getEdges(){
+			return edges;
+		}
+		public ArrayList<String> citiesReachableTimeNode(int time,ArrayList<String> prevResults){
+			
+			ArrayList<String> result = new ArrayList<String>();
+			for(Edge e: G.get(this.Label).edges) {
+				
+				if(e.time <= time) {
+					
+					if(!prevResults.contains(e.EndLocation)) {
+						
+						result.add(e.EndLocation);
+						prevResults.add(e.EndLocation);
+						result.addAll(G.get(e.EndLocation).citiesReachableTimeNode(time-e.time, prevResults));
+					}
+					
+				}
+				
+			}
+			return result;
+		}
 
 	}
-	Map<String, List<Node>> G = null;
+	
+	Map<String, Node> G = null;
 	public Graph() {
 		G = new HashMap<>();
 	}
-	public boolean addEdge (String nodeStart, String nodeEnd,int d, int t ) {
-		if(!G.containsKey(nodeStart)) {
-			G.put(nodeStart, new LinkedList<>());
+	public boolean addLocation(String cityName) {
+		if(!G.containsKey(cityName)) {
+			Node cityNode = new Node(cityName);
+			G.put(cityName, cityNode);
+			return true;
 		}
-		G.get(nodeStart).add(new Node(nodeStart,nodeEnd,d,t));
+		return false;
+	}
+	public boolean addPath(String start, String end,int d, int t ) {
+		if(!G.containsKey(start)) {
+			Node cityNode = new Node(start);
+			G.put(start, cityNode);
+		}
+		
+		if(!G.containsKey(end)) {
+			Node cityNode = new Node(end);
+			G.put(end, cityNode);
+		}
+	
+		G.get(start).addEdge(end, d, t);
+
+		G.get(end).addEdge(start, d, t);
 		return true;
 	}
-	public boolean addPath(String nodeStart, String nodeEnd,int d, int t ) {
-		addEdge(nodeEnd, nodeStart, d, t);
-		addEdge(nodeStart, nodeEnd, d,t);
-		
-		return true;
+	public ArrayList<String> citiesReachableTime(String start, int time){
+		if(!G.containsKey(start)) {
+			throw new IllegalArgumentException("the city - "+start+" does not exsist on map.");
+		}
+		return G.get(start).citiesReachableTimeNode(time, new ArrayList<String>(Arrays.asList(start)));
+	
 	}
 	public String toString() {
 		String graph = "";
 		for(String key: G.keySet()) {
-			graph += key+ "==>"+G.get(key)+"\n";
-		}
-		
+			graph += key+ "==>" +G.get(key).toString()+ "\n";
+	
+	}
 		return graph;
 	}
+	
 	
 	
 	
