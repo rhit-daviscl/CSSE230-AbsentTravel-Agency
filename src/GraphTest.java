@@ -14,7 +14,6 @@ class GraphTest {
 		g.addPath("Salt Lake", "Boise", 4, 5);
 		g.addPath("Salt Lake", "Ogden", 1, 1);
 		g.addPath("Seattle", "Tacoma", 2, 2);
-		
 		System.out.println(g.citiesReachableTime("New York", 28));
 		
 		
