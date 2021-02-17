@@ -69,7 +69,7 @@ public class NavigationProject {
 		//Distance Panel Adds
 		checkBoxPanel = new JPanel();
 		frame.add(checkBoxPanel, BorderLayout.EAST);
-		checkBoxPanel.setLayout(new GridLayout(20, 1));
+		checkBoxPanel.setLayout(new GridLayout(8, 1));
 		
 		JLabel distance = new JLabel("Distance");
 		JLabel instructions = new JLabel("Use these Check Boxes when searching normally.");
@@ -99,7 +99,7 @@ public class NavigationProject {
 		JLabel instructionSpecial = new JLabel("Fill in the Starting City and select which type to search.");
 		JLabel instructionSpecial2 = new JLabel("Put in a number for the shortest time or distance locations.");
 		searchBarDistTime = new JTextField();
-		searchByDistTime = new JPanel(new GridLayout(20, 1));
+		searchByDistTime = new JPanel(new GridLayout(8, 1));
 		searchBut2 = new JButton("Specific Search");
 		
 		searchByDistTime.add(instructionSpecial);
@@ -112,9 +112,7 @@ public class NavigationProject {
 		frame.add(searchByDistTime, BorderLayout.WEST);
 		
 		//Result Adds
-		resultsPanel = new JPanel(new GridLayout(30, 1));
-		
-		frame.add(resultsPanel, BorderLayout.SOUTH);
+		clearResults();
 		
 		//Frame visible
 		frame.setVisible(true);
@@ -123,16 +121,26 @@ public class NavigationProject {
 	}
 	
 	public void addResults(ArrayList<String> locations) {
+		JLabel intro = new JLabel("Result of Search");
+		resultsPanel.add(intro);
 		for(int i = 0; i < locations.size(); i++) {
 			JLabel result = new JLabel(locations.get(i));
 			resultsPanel.add(result);
 		}
-		resultsPanel.validate();
+		frame.add(resultsPanel, BorderLayout.SOUTH);
+		frame.revalidate();
 	}
 	
 	public void clearResults() {
 		resultsPanel = new JPanel(new GridLayout(30, 1));
-		resultsPanel.validate();
+		String totalLocations = "";
+		for(int i = 0; i < graph.getNodes().size(); i++) {
+			totalLocations = totalLocations + graph.getNodes().get(i) +" ";
+		}
+		JLabel intro = new JLabel(totalLocations);
+		resultsPanel.add(intro);
+		frame.add(resultsPanel, BorderLayout.SOUTH);
+		frame.revalidate();
 	}
 	
 	public class SearchButtonListener implements ActionListener{
@@ -214,6 +222,7 @@ public class NavigationProject {
 					}
 					else {
 						//Search for distance far
+						addResults(result);
 						System.out.println(result);
 						return;
 					}
@@ -234,6 +243,7 @@ public class NavigationProject {
 					}
 					else {
 						//Search for distance close
+						addResults(result);
 						System.out.println(result);
 						return;
 					}
@@ -254,6 +264,7 @@ public class NavigationProject {
 					}
 					else {
 						//Search for time long
+						addResults(timeResult);
 						System.out.println(timeResult);
 						return;
 					}
@@ -371,9 +382,9 @@ public class NavigationProject {
 			timeLong.setSelected(false);
 			distanceCheckBox.setSelected(false);
 			timeCheckBox.setSelected(false);
-//			searchBarStarting = new JTextField();
-//			searchBar = new JTextField();
-//			searchBarDistTime = new JTextField();
+			searchBarStarting.setText("");
+			searchBar.setText("");
+			searchBarDistTime.setText("");
 		}
 	}
 }

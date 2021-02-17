@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -13,6 +14,10 @@ public class ProgramRunner {
 	public static void main(String[] args) {
 		graph = new Graph();
 		project = new NavigationProject(graph);
+		ArrayList<String> yaya = new ArrayList<String>();
+//		yaya.add("yeye");
+//		yaya.add("twtw");
+//		project.addResults(yaya);
 		graph.addLocation("Chicago");
 		graph.addPath("Chicago","New York", 7, 7);
 		graph.addPath("Chicago","Seattle", 18, 18);
