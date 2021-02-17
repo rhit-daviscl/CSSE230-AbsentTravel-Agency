@@ -15,11 +15,14 @@ class GraphTest {
 		g.addPath("Salt Lake", "Ogden", 1, 1);
 		g.addPath("Seattle", "Tacoma", 4, 2);
 		g.addPath("Salt Lake", "Tacoma", 7, 6);
-		//System.out.println(g.citiesReachableTime("New York", 28));
+		System.out.println(g.citiesReachableTime("New York", 28));
 		System.out.println(g.citiesReachableDistance("Chicago", 15));
 		
 		
-		System.out.println(g);
+		//System.out.println("dist");
+		System.out.println(g.getShortestPathDistance("Chicago", "New York"));
+		System.out.println(g.getShortestPathDistance("Tacoma", "New York"));
+		System.out.println(g.getShortestPathDistance("New York", "Ogden"));
 		
 	}
 
