@@ -29,13 +29,9 @@ public class Graph{
 	}
 	
 	public Node getNode(String s) {
-		for(String key : G.keySet()) {
-			if(G.get(key).Label.equals(s)) {
-				return G.get(key);
-			}
+			return G.get(s);
 		}
-		return null;
-	}
+
 	
 	public class Edge{
 		public int distance;
@@ -280,6 +276,39 @@ public class Graph{
 		for(Node n : path) {
 			strings.add(n.Label);
 		}
+		return strings;
+	}
+	
+	public ArrayList<String> getShortestPathTime(String start, String end) {
+		if(start.equals(end)) throw new IllegalArgumentException("The starting city cannot be the same as the destination city.");
+		if(start == null || end == null) throw new IllegalArgumentException("One or more of the cities is invalid.");
+		if(!G.containsKey(start)) throw new IllegalArgumentException("Start city does not exist.");
+		if(!G.containsKey(end)) throw new IllegalArgumentException("Destination city does not exist.");
+		
+		//save all the distances in a temp array
+		ArrayList<Integer> distances = new ArrayList<Integer>();
+		int index = 0;
+		for(Edge e : this.getEdges()) {
+			distances.add(e.distance);
+		}
+		//for each edge, set its distance equal to its time
+		for(Edge e : this.getEdges()) {
+			e.distance = e.time;
+		}
+		//run our algorithm with these "distances"
+		DijkstraAlgorithm d = new DijkstraAlgorithm(this);
+		d.begin(getNode(start));
+		ArrayList<Node> path = d.getPath(getNode(end));
+		ArrayList<String> strings = new ArrayList<String>();
+		for(Node n : path) {
+			strings.add(n.Label);
+		}
+		//now re-populate our distances with our saved values
+		for(Edge e : this.getEdges()) {
+			e.distance = distances.get(index);
+			index++;
+		}
+		
 		return strings;
 	}
 	
