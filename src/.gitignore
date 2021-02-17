@@ -6,3 +6,9 @@
 /NavigationProject.class
 /Node.class
 /ProgramRunner.class
+/Graph$DijkstraAlgorithm.class
+/NavigationProject$ClearButtonListener.class
+/NavigationProject$SearchButtonListener.class
+/NavigationProject$SearchDistOrTimeButtonListener.class
+/Graph$Node$DijkstraAlgorithm.class
+/NavigationProject$AddButtonListener.class
