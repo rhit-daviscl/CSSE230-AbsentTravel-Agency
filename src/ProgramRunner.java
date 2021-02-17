@@ -14,10 +14,6 @@ public class ProgramRunner {
 	public static void main(String[] args) {
 		graph = new Graph();
 		project = new NavigationProject(graph);
-		ArrayList<String> yaya = new ArrayList<String>();
-//		yaya.add("yeye");
-//		yaya.add("twtw");
-//		project.addResults(yaya);
 		graph.addLocation("Chicago");
 		graph.addPath("Chicago","New York", 7, 7);
 		graph.addPath("Chicago","Seattle", 18, 18);
@@ -28,6 +24,7 @@ public class ProgramRunner {
 		graph.addPath("Salt Lake", "Ogden", 1, 1);
 		graph.addPath("Seattle", "Tacoma", 4, 2);
 		graph.addPath("Salt Lake", "Tacoma", 7, 6);
+		project.clearResults();
 	}
 
 }

@@ -18,9 +18,7 @@ public class NavigationProject {
 	
 	//Check Boxes
 	private JPanel checkBoxPanel;
-	private JCheckBox distFar;
 	private JCheckBox distClose;
-	private JCheckBox timeLong;
 	private JCheckBox timeShort;
 	
 	//Search Bar
@@ -36,6 +34,14 @@ public class NavigationProject {
 	private JButton searchBut2;
 	private JCheckBox distanceCheckBox;
 	private JCheckBox timeCheckBox;
+	
+	//Add to graph
+	private JButton addButton;
+	private JTextField startingLocation;
+	private JTextField endingLocation;
+	private JTextField distanceAdd;
+	private JTextField timeAdd;
+	private JPanel addPanel;
 	
 	//Results
 	private JPanel resultsPanel;
@@ -74,22 +80,18 @@ public class NavigationProject {
 		JLabel distance = new JLabel("Distance");
 		JLabel instructions = new JLabel("Use these Check Boxes when searching normally.");
 		JLabel instructions2 = new JLabel("Fill in the Starting City and Ending City and select the search type.");
-		distFar = new JCheckBox("Far");
 		distClose = new JCheckBox("Close");
 		
 		checkBoxPanel.add(instructions, BorderLayout.BEFORE_FIRST_LINE);
 		checkBoxPanel.add(instructions2, BorderLayout.AFTER_LAST_LINE);
 		checkBoxPanel.add(distance, BorderLayout.WEST);
-		checkBoxPanel.add(distFar, BorderLayout.EAST);
 		checkBoxPanel.add(distClose, BorderLayout.EAST);
 		
 		// Time Panel Adds
 		JLabel time = new JLabel("Time");
-		timeLong = new JCheckBox("Long");
 		timeShort = new JCheckBox("Short");
 		
 		checkBoxPanel.add(time, BorderLayout.SOUTH);
-		checkBoxPanel.add(timeLong, BorderLayout.AFTER_LINE_ENDS);
 		checkBoxPanel.add(timeShort, BorderLayout.AFTER_LINE_ENDS);
 		
 		//Search By Time or Distance
@@ -111,8 +113,29 @@ public class NavigationProject {
 		searchBut2.addActionListener(new SearchDistOrTimeButtonListener());
 		frame.add(searchByDistTime, BorderLayout.WEST);
 		
-		//Result Adds
-		clearResults();
+		//Add Button Adds
+		addButton = new JButton("Add City");
+		startingLocation = new JTextField();
+		JLabel startingLoc = new JLabel("New Starting City Name");
+		endingLocation = new JTextField();
+		JLabel endLoc = new JLabel("New Ending City Name");
+		distanceAdd = new JTextField();
+		JLabel distAdd = new JLabel("New City-City Distane");
+		timeAdd = new JTextField();
+		JLabel tIMEaDD = new JLabel("New City-City Time");
+		addPanel = new JPanel(new GridLayout(10, 1));
+		
+		addPanel.add(startingLoc);
+		addPanel.add(startingLocation);
+		addPanel.add(endLoc);
+		addPanel.add(endingLocation);
+		addPanel.add(distAdd);
+		addPanel.add(distanceAdd);
+		addPanel.add(tIMEaDD);
+		addPanel.add(timeAdd);
+		addPanel.add(addButton);
+		addButton.addActionListener(new AddButtonListener());
+		frame.add(addPanel);
 		
 		//Frame visible
 		frame.setVisible(true);
@@ -133,10 +156,11 @@ public class NavigationProject {
 	
 	public void clearResults() {
 		resultsPanel = new JPanel(new GridLayout(30, 1));
-		String totalLocations = "";
-		for(int i = 0; i < graph.getNodes().size(); i++) {
-			totalLocations = totalLocations + graph.getNodes().get(i) +" ";
+		String totalLocations = "All Locations On Map:    ";
+		for(String key: graph.G.keySet()) {
+			totalLocations = totalLocations + key + ";    ";
 		}
+		totalLocations = totalLocations + "Add more at the above";
 		JLabel intro = new JLabel(totalLocations);
 		resultsPanel.add(intro);
 		frame.add(resultsPanel, BorderLayout.SOUTH);
@@ -151,14 +175,12 @@ public class NavigationProject {
 				ArrayList<String> result = new ArrayList<String>();
 				ArrayList<String> timeResult = new ArrayList<String>();
 				if(searchBarStarting.getText() == null || searchBarStarting.getText().trim().isEmpty()) {
-					System.out.println("Give a Starting Location");
 					result.add("Give a Starting Location");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
 				if(searchBar.getText() == null || searchBar.getText().trim().isEmpty()) {
-					System.out.println("Give a Ending Location");
 					result.add("Give a Ending Location");
 					addResults(result);
 					return;
@@ -166,127 +188,64 @@ public class NavigationProject {
 				}
 				String searchStarting = searchBarStarting.getText();
 				String searchEnding = searchBar.getText();
+				ArrayList<String> bothTimeAndDist = new ArrayList<String>();
 				if(graph.getNode(searchStarting) == null) {
-					System.out.println("Use an actual location in Graph");
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
 				if(graph.getNode(searchEnding) == null) {
-					System.out.println("Use an actual location in Graph");
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
-				if(!distFar.isSelected() && !distClose.isSelected() && !timeLong.isSelected() && !timeShort.isSelected()) {
-					System.out.println("Select the search type");
+				if(!distClose.isSelected() && !timeShort.isSelected()) {
 					result.add("Select the search type");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
-				
-				if(distFar.isSelected()) {
-					if(distClose.isSelected()) {
-						System.out.println("Only have 1 search parameter per type");
-						result.add("Only have 1 search parameter per type");
-						addResults(result);
-						return;
-						//Make the results panel say this
-					}
-				}
-				if(timeLong.isSelected()) {
-					if(timeShort.isSelected()) {
-						System.out.println("Only have 1 search parameter per type");
-						result.add("Only have 1 search parameter per type");
-						addResults(result);;
-						return;
-						//Make the results panel say this
-					}
-				}	
-				if(distFar.isSelected()) {
-					//result = graph.getLongestPathDistance(searchStarting, searchEnding);
-					if(timeLong.isSelected()) {
-						//Search for both distance far and time long
-						//timeResult = graph.getLongestPathTime(searchStarting, searchEnding);
-						System.out.println("Search far and long");
-						return;
-					}
-					if(timeShort.isSelected()) {
-						//Search for both distance far and time short
-						//timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
-						System.out.println("Search far and short");
-						return;
-					}
-					else {
-						//Search for distance far
-						addResults(result);
-						System.out.println(result);
-						return;
-					}
-				}
 				if(distClose.isSelected()) {
 					result = graph.getShortestPathDistance(searchStarting, searchEnding);
-					if(timeLong.isSelected()) {
-						//Search for both distance close and time long
-						//timeResult = graph.getLongestPathTime(searchStarting, searchEnding);
-						System.out.println("Search close and long");
-						return;
-					}
 					if(timeShort.isSelected()) {
 						//Search for both distance close and time short
-						//timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
-						System.out.println("Search close and short");
+						timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
+						for(int i = 0; i < result.size(); i++) {
+							for(int j = 0; j < timeResult.size(); j++) {
+								if(result.get(i) == timeResult.get(j)) {
+									bothTimeAndDist.add(result.get(i));
+								}
+							}
+						}
+						addResults(bothTimeAndDist);
 						return;
 					}
 					else {
 						//Search for distance close
 						addResults(result);
-						System.out.println(result);
-						return;
-					}
-				}
-				if(timeLong.isSelected()) {
-					//timeResult = graph.getLongestPathTime(searchStarting, searchEnding);
-					if(distFar.isSelected()) {
-						//Search for both distance far and time long
-						//result = graph.getLongestPathDistance(searchStarting, searchEnding);
-						System.out.println("Search far and long");
-						return;
-					}
-					if(distClose.isSelected()) {
-						//Search for both distance close and time long
-						result = graph.getShortestPathDistance(searchStarting, searchEnding);
-						System.out.println("Search close and long");
-						return;
-					}
-					else {
-						//Search for time long
-						addResults(timeResult);
-						System.out.println(timeResult);
 						return;
 					}
 				}
 				if(timeShort.isSelected()) {
-					//timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
-					if(distFar.isSelected()) {
-						//Search for both distance far and time short
-						//result = graph.getLongestPathDistance(searchStarting, searchEnding);
-						System.out.println("Search far and short");
-						return;
-					}
+					timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
 					if(distClose.isSelected()) {
 						//Search for both distance close and time short
 						result = graph.getShortestPathDistance(searchStarting, searchEnding);
-						System.out.println("Search close and short");
+						for(int i = 0; i < result.size(); i++) {
+							for(int j = 0; j < timeResult.size(); j++) {
+								if(result.get(i) == timeResult.get(j)) {
+									bothTimeAndDist.add(result.get(i));
+								}
+							}
+						}
+						addResults(bothTimeAndDist);;
 						return;
 					}
 					else {
 						//Search for time short
 						addResults(timeResult);
-						System.out.println(timeResult);
 						return;
 					}
 				}
@@ -300,7 +259,6 @@ public class NavigationProject {
 				clearResults();
 				ArrayList<String> result = new ArrayList<String>();
 				if(searchBarDistTime.getText() == null || searchBarDistTime.getText().trim().isEmpty()) {
-					System.out.println("Give a search number");
 					result.add("Give a search number");
 					addResults(result);
 					return;
@@ -310,14 +268,12 @@ public class NavigationProject {
 				try {
 					searchedNumber = Integer.parseInt(searchBarDistTime.getText());
 				} catch(NumberFormatException nfe) {
-					System.out.println("Use an actual number in Seach Bar");
 					result.add("Use an actual number in Seach Bar");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
 				if(searchedNumber >= 85) {
-					System.out.println("This Number Input is too large");
 					result.add("This Number Input is too large");
 					addResults(result);
 					return;
@@ -325,21 +281,18 @@ public class NavigationProject {
 				}
 				String searchStarting = searchBarStarting.getText();
 				if(graph.getNode(searchStarting) == null) {
-					System.out.println("Use an actual location in Graph");
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
 				if(searchStarting == null || searchStarting.trim().isEmpty()) {
-					System.out.println("Give a Starting Location");
 					result.add("Give a Starting Location");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
 				if(!distanceCheckBox.isSelected() && !timeCheckBox.isSelected()) {
-					System.out.println("Select the search type");
 					result.add("Select the search type");
 					addResults(result);
 					return;
@@ -347,7 +300,6 @@ public class NavigationProject {
 				}
 				if(distanceCheckBox.isSelected()) {
 					if(timeCheckBox.isSelected()) {
-						System.out.println("Only have 1 search parameter");
 						result.add("Only have 1 search parameter");
 						addResults(result);
 						return;
@@ -357,19 +309,60 @@ public class NavigationProject {
 				if(distanceCheckBox.isSelected()) {
 					result = graph.citiesReachableDistance(searchStarting, searchedNumber);
 					addResults(result);
-					System.out.println(result);
 					return;
 					//Search for selected distance
 				}
 				if(timeCheckBox.isSelected()) {
 					result = graph.citiesReachableTime(searchStarting, searchedNumber);
 					addResults(result);
-					System.out.println(result);
 					return;
 					//Search for selected time
 				}
 			}	
 		}
+	
+	public class AddButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			clearResults();
+			ArrayList<String> result = new ArrayList<String>();
+			if(startingLocation.getText() == null || startingLocation.getText().trim().isEmpty()) {
+				result.add("Input a Starting City");
+				addResults(result);
+				return;
+				//Make the results panel say this
+			}
+			if(endingLocation.getText() == null || endingLocation.getText().trim().isEmpty()) {
+				result.add("Input an Ending City");
+				addResults(result);
+				return;
+				//Make the results panel say this
+			}
+			int distance;
+			try {
+				distance = Integer.parseInt(distanceAdd.getText());
+			} catch(NumberFormatException nfe) {
+				result.add("Use an actual number in Seach Bar");
+				addResults(result);
+				return;
+				//Make the results panel say this
+			}
+			int time;
+			try {
+				time = Integer.parseInt(timeAdd.getText());
+			} catch(NumberFormatException nfe) {
+				result.add("Use an actual number in Seach Bar");
+				addResults(result);
+				return;
+				//Make the results panel say this
+			}
+			graph.addPath(startingLocation.getText(), endingLocation.getText(), distance, time);
+			result.add("City Has Been Added");
+			addResults(result);
+			return;
+		}
+	}
 	
 	public class ClearButtonListener implements ActionListener{
 
@@ -377,14 +370,16 @@ public class NavigationProject {
 		public void actionPerformed(ActionEvent e) {
 			clearResults();
 			distClose.setSelected(false);
-			distFar.setSelected(false);
 			timeShort.setSelected(false);
-			timeLong.setSelected(false);
 			distanceCheckBox.setSelected(false);
 			timeCheckBox.setSelected(false);
 			searchBarStarting.setText("");
 			searchBar.setText("");
 			searchBarDistTime.setText("");
+			startingLocation.setText("");
+			endingLocation.setText("");
+			distanceAdd.setText("");;
+			timeAdd.setText("");;
 		}
 	}
 }
