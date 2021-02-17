@@ -16,11 +16,6 @@ public class NavigationProject {
 	private JFrame frame;
 	private Graph graph;
 	
-	//Check Boxes
-	private JPanel checkBoxPanel;
-	private JCheckBox distClose;
-	private JCheckBox timeShort;
-	
 	//Search Bar
 	private JTextField searchBarStarting;
 	private JTextField searchBar;
@@ -59,9 +54,17 @@ public class NavigationProject {
 		
 		JLabel startingPos = new JLabel("Starting City");
 		JLabel endPos = new JLabel("Ending City");
+		JLabel instruc = new JLabel("If searching for the shortest distance or time between cities, input the starting and");
+		JLabel instruc2 = new JLabel(" ending city and choose distance or time.");
+		JLabel instruc3 = new JLabel("If searching for all cities reachable by a certain time or distance,  select distance or");
+		JLabel instruc4 = new JLabel(" time and input amount desired.");
 		
 		searchPanel = new JPanel( new GridLayout(5, 2));
 		
+		searchPanel.add(instruc);
+		searchPanel.add(instruc2);
+		searchPanel.add(instruc3);
+		searchPanel.add(instruc4);
 		searchPanel.add(startingPos, BorderLayout.BEFORE_FIRST_LINE);
 		searchPanel.add(searchBarStarting, BorderLayout.AFTER_LINE_ENDS);
 		searchPanel.add(endPos, BorderLayout.AFTER_LINE_ENDS);
@@ -72,37 +75,15 @@ public class NavigationProject {
 		search.addActionListener(new SearchButtonListener());
 		frame.add(searchPanel, BorderLayout.NORTH);
 		
-		//Distance Panel Adds
-		checkBoxPanel = new JPanel();
-		frame.add(checkBoxPanel, BorderLayout.EAST);
-		checkBoxPanel.setLayout(new GridLayout(8, 1));
-		
-		JLabel distance = new JLabel("Distance");
-		JLabel instructions = new JLabel("Use these Check Boxes when searching normally.");
-		JLabel instructions2 = new JLabel("Fill in the Starting City and Ending City and select the search type.");
-		distClose = new JCheckBox("Close");
-		
-		checkBoxPanel.add(instructions, BorderLayout.BEFORE_FIRST_LINE);
-		checkBoxPanel.add(instructions2, BorderLayout.AFTER_LAST_LINE);
-		checkBoxPanel.add(distance, BorderLayout.WEST);
-		checkBoxPanel.add(distClose, BorderLayout.EAST);
-		
-		// Time Panel Adds
-		JLabel time = new JLabel("Time");
-		timeShort = new JCheckBox("Short");
-		
-		checkBoxPanel.add(time, BorderLayout.SOUTH);
-		checkBoxPanel.add(timeShort, BorderLayout.AFTER_LINE_ENDS);
-		
 		//Search By Time or Distance
 		distanceCheckBox = new JCheckBox("Search by Distance");
 		timeCheckBox = new JCheckBox("Search by Time");
 		
-		JLabel instructionSpecial = new JLabel("Fill in the Starting City and select which type to search.");
-		JLabel instructionSpecial2 = new JLabel("Put in a number for the shortest time or distance locations.");
+		JLabel instructionSpecial = new JLabel(" ");
+		JLabel instructionSpecial2 = new JLabel(" ");
 		searchBarDistTime = new JTextField();
 		searchByDistTime = new JPanel(new GridLayout(8, 1));
-		searchBut2 = new JButton("Specific Search");
+		searchBut2 = new JButton("Specific Time or Distance Search");
 		
 		searchByDistTime.add(instructionSpecial);
 		searchByDistTime.add(instructionSpecial2);
@@ -115,6 +96,8 @@ public class NavigationProject {
 		
 		//Add Button Adds
 		addButton = new JButton("Add City");
+		JLabel addInstructions = new JLabel("Input a Starting and Ending City to add as");
+		JLabel addInstructions2 = new JLabel("well as a distance and time between them.");
 		startingLocation = new JTextField();
 		JLabel startingLoc = new JLabel("New Starting City Name");
 		endingLocation = new JTextField();
@@ -125,6 +108,8 @@ public class NavigationProject {
 		JLabel tIMEaDD = new JLabel("New City-City Time");
 		addPanel = new JPanel(new GridLayout(10, 1));
 		
+		addPanel.add(addInstructions);
+		addPanel.add(addInstructions2);
 		addPanel.add(startingLoc);
 		addPanel.add(startingLocation);
 		addPanel.add(endLoc);
@@ -135,7 +120,7 @@ public class NavigationProject {
 		addPanel.add(timeAdd);
 		addPanel.add(addButton);
 		addButton.addActionListener(new AddButtonListener());
-		frame.add(addPanel);
+		frame.add(addPanel, BorderLayout.EAST);
 		
 		//Frame visible
 		frame.setVisible(true);
@@ -160,7 +145,7 @@ public class NavigationProject {
 		for(String key: graph.G.keySet()) {
 			totalLocations = totalLocations + key + ";    ";
 		}
-		totalLocations = totalLocations + "Add more at the above";
+		totalLocations = totalLocations + "Add more above";
 		JLabel intro = new JLabel(totalLocations);
 		resultsPanel.add(intro);
 		frame.add(resultsPanel, BorderLayout.SOUTH);
@@ -201,15 +186,15 @@ public class NavigationProject {
 					return;
 					//Make the results panel say this
 				}
-				if(!distClose.isSelected() && !timeShort.isSelected()) {
+				if(!distanceCheckBox.isSelected() && !timeCheckBox.isSelected()) {
 					result.add("Select the search type");
 					addResults(result);
 					return;
 					//Make the results panel say this
 				}
-				if(distClose.isSelected()) {
+				if(distanceCheckBox.isSelected()) {
 					result = graph.getShortestPathDistance(searchStarting, searchEnding);
-					if(timeShort.isSelected()) {
+					if(timeCheckBox.isSelected()) {
 						//Search for both distance close and time short
 						timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
 						for(int i = 0; i < result.size(); i++) {
@@ -228,9 +213,9 @@ public class NavigationProject {
 						return;
 					}
 				}
-				if(timeShort.isSelected()) {
+				if(timeCheckBox.isSelected()) {
 					timeResult = graph.getShortestPathTime(searchStarting, searchEnding);
-					if(distClose.isSelected()) {
+					if(distanceCheckBox.isSelected()) {
 						//Search for both distance close and time short
 						result = graph.getShortestPathDistance(searchStarting, searchEnding);
 						for(int i = 0; i < result.size(); i++) {
@@ -369,8 +354,6 @@ public class NavigationProject {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			clearResults();
-			distClose.setSelected(false);
-			timeShort.setSelected(false);
 			distanceCheckBox.setSelected(false);
 			timeCheckBox.setSelected(false);
 			searchBarStarting.setText("");
