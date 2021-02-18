@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class NavigationProject {
-	// remove cost limits
+	// remove cost limit
 	private JFrame frame;
 	private Graph graph;
 	

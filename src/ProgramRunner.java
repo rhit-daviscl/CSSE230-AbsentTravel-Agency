@@ -10,7 +10,7 @@ public class ProgramRunner {
 	
 	private static NavigationProject project;
 	private static Graph graph;
-	//here
+	//northwest
 	public static void main(String[] args) {
 		graph = new Graph();
 		project = new NavigationProject(graph);

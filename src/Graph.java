@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 //edited
 public class Graph{
-	// TODO check for OO and clean up 
+	// TODO check for OO and clean up
 	public ArrayList<Node> getNodes(){
 		ArrayList<Node> list = new ArrayList<Node>();
 		for(String key : G.keySet()) {
