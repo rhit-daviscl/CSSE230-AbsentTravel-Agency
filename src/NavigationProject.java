@@ -173,6 +173,12 @@ public class NavigationProject {
 				}
 				String searchStarting = searchBarStarting.getText();
 				String searchEnding = searchBar.getText();
+				if(searchStarting.contentEquals(searchEnding)) {
+					result.add("Can't use the same graph location");
+					addResults(result);
+					return;
+					//Make the results panel say this
+				}
 				ArrayList<String> bothTimeAndDist = new ArrayList<String>();
 				if(graph.getNode(searchStarting) == null) {
 					result.add("Use an actual location in Graph");
