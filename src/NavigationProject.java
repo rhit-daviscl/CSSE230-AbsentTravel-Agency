@@ -258,12 +258,6 @@ public class NavigationProject {
 					return;
 					//Make the results panel say this
 				}
-				if(searchedNumber >= 85) {
-					result.add("This Number Input is too large");
-					addResults(result);
-					return;
-					//Make the results panel say this
-				}
 				String searchStarting = searchBarStarting.getText();
 				if(graph.getNode(searchStarting) == null) {
 					result.add("Use an actual location in Graph");
@@ -292,6 +286,7 @@ public class NavigationProject {
 					}
 				}
 				if(distanceCheckBox.isSelected()) {
+					//System.out.println(searchStarting.compareTo("Tacoma"));
 					result = graph.citiesReachableDistance(searchStarting, searchedNumber);
 					addResults(result);
 					return;

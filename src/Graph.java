@@ -156,7 +156,7 @@ public class Graph{
 		public void getMinDistance(Node n) {
 			ArrayList<Node> adjacentNodes = getNeighbors(n);
 			for(Node dest : adjacentNodes) {
-				if(getShortestDistance(dest) > getShortestDistance(dest) + getDistance(n, dest)) {
+				if(getShortestDistance(dest) > getShortestDistance(n) + getDistance(n, dest)) {
 					dist.put(dest, getShortestDistance(n) + getDistance(n, dest));
 					precursors.put(dest, n);
 					unsettledNodes.add(dest);
@@ -255,7 +255,7 @@ public class Graph{
 		}
 		ArrayList<String> unvisitedCities = new ArrayList<String>();
 		for(String x: G.keySet()) {
-			if( x != start) {
+			if( x.compareTo(start) != 0) {
 				unvisitedCities.add(x);
 			}
 		}
@@ -269,7 +269,7 @@ public class Graph{
 		}
 		ArrayList<String> unvisitedCities = new ArrayList<String>();
 		for(String x: G.keySet()) {
-			if( x != start) {
+			if( x.compareTo(start) != 0) {
 				unvisitedCities.add(x);
 			}
 		}

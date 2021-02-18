@@ -14,16 +14,19 @@ public class ProgramRunner {
 	public static void main(String[] args) {
 		graph = new Graph();
 		project = new NavigationProject(graph);
-		graph.addLocation("Chicago");
-		graph.addPath("Chicago","New York", 7, 7);
-		graph.addPath("Chicago","Seattle", 18, 18);
-		graph.addPath("Seattle","New York", 31, 30);
-		graph.addPath("Seattle", "Salt Lake", 8, 10);
-		graph.addPath("Salt Lake","Chicago", 8, 8);
-		graph.addPath("Salt Lake", "Boise", 4, 5);
-		graph.addPath("Salt Lake", "Ogden", 1, 1);
-		graph.addPath("Seattle", "Tacoma", 4, 2);
-		graph.addPath("Salt Lake", "Tacoma", 7, 6);
+		graph.addLocation("Seattle");
+		graph.addPath("Seattle", "Tacoma", 34, 34);
+		graph.addPath("Seattle", "MT Rainer", 86, 103);
+		graph.addPath("Tacoma", "Olympia", 31, 33);
+		graph.addPath("Olympia", "MT Rainer", 65, 89);
+		graph.addPath("Portland", "Olympia", 121,113);
+		graph.addPath("Portland", "Boise", 436,417);
+		graph.addPath("Seattle", "Boise", 494, 487);
+		graph.addPath("Seattle", "Salt Lake City", 955, 904);
+		graph.addPath("Boise", "Salt Lake City", 340, 304);
+		graph.addPath("Seattle", "Yellowstone", 980, 930);
+		graph.addPath("Boise", "Yellowstone", 1, 1);
+		System.out.println(graph.getShortestPathDistance("Seattle","Yellowstone"));
 		project.clearResults();
 	}
 
