@@ -214,6 +214,7 @@ public class Graph{
 			while(precursors.get(step) != null) {
 				step = precursors.get(step);
 				path.add(step);
+
 			}
 			Collections.reverse(path);
 			return path;
