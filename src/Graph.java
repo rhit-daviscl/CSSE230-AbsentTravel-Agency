@@ -156,7 +156,7 @@ public class Graph{
 		public void getMinDistance(Node n) {
 			ArrayList<Node> adjacentNodes = getNeighbors(n);
 			for(Node dest : adjacentNodes) {
-				if(getShortestDistance(dest) > getShortestDistance(dest) + getDistance(n, dest)) {
+				if(getShortestDistance(dest) > getShortestDistance(n) + getDistance(n, dest)) {
 					dist.put(dest, getShortestDistance(n) + getDistance(n, dest));
 					precursors.put(dest, n);
 					unsettledNodes.add(dest);
@@ -214,6 +214,7 @@ public class Graph{
 			while(precursors.get(step) != null) {
 				step = precursors.get(step);
 				path.add(step);
+
 			}
 			Collections.reverse(path);
 			return path;
