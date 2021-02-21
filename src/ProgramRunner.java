@@ -25,7 +25,7 @@ public class ProgramRunner {
 		graph.addPath("Seattle", "Salt Lake City", 955, 904);
 		graph.addPath("Boise", "Salt Lake City", 340, 304);
 		graph.addPath("Seattle", "Yellowstone", 980, 930);
-		graph.addPath("Boise", "Yellowstone", 1, 1);
+		graph.addPath("Boise", "Yellowstone", 200, 200);
 		System.out.println(graph.getShortestPathDistance("Seattle","Yellowstone"));
 		project.clearResults();
 	}

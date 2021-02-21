@@ -1,57 +1,20 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 //edited
 public class Graph{
-	// TODO check for OO and clean up
-	public ArrayList<Node> getNodes(){
-		ArrayList<Node> list = new ArrayList<Node>();
-		for(String key : G.keySet()) {
-			list.add(G.get(key));
-		}
-		return list;
-	}
 	
-	public ArrayList<Edge> getEdges(){
-		ArrayList<Edge> e = new ArrayList<Edge>();
-		for(Node n : this.getNodes()) {
-			for(Edge f : n.getEdges()) {
-				e.add(f);
-			}
-		}
-		return e;
-	}
-	
+
 	public Node getNode(String s) {
 			return G.get(s);
 		}
 
 	
-	public class Edge{
-		public int distance;
-		public int time;
-		public String EndLocation;
-		public String StartLocation;
-		public Edge(int d, int t, String StartLocation, String endLocation) {
-			this.distance = d;
-			this.EndLocation = endLocation;
-			this.StartLocation = StartLocation;
-			this.time = t;
-		}
-		public String toString() {
-			String str = "\n" + StartLocation + "==> distance:"+distance+"==> time:"+time+"==>"+EndLocation;
-			
-			
-			return str;
-		}
-	}
 	
+	//Node class that acts as pin point for each city
 	public class Node {
 		public String Label;
 		public int distanceCost;
@@ -61,17 +24,16 @@ public class Graph{
 			this.Label = s;
 			this.edges = new ArrayList<Edge>();
 		}
+		// returns string form of all the edges the node is connected to
 		public String toString() {
 			return edges.toString();
 		}
-
+		// function to reset a cities name
 		public void setName(String newName) {
 			this.Label = newName;
 		}
-		public int hashCode() {
-			return Label.hashCode();
-		}
-		public void addEdge (String End,int d, int t ) {
+		
+		public void addEdge (Node End,int d, int t ) {
 			
 			Edge e = new Edge(d,t, this.Label, End);
 			this.edges.add(e);
@@ -79,50 +41,68 @@ public class Graph{
 		public ArrayList<Edge> getEdges(){
 			return edges;
 		}
-		public ArrayList<String> citiesReachableTimeNode(int time,ArrayList<String> unvisitedCities, int costSoFar){
+		
+		public void citiesReachableTimeNode(int time,ArrayList<String> unvisitedCities, int costSoFar, ArrayList<String> result){
 			if(unvisitedCities.isEmpty()) {
-				return unvisitedCities;
+				return ;
 			}
-			ArrayList<String> result = new ArrayList<String>();
 			for(Edge e: this.edges) {
-				
 				if(e.time <= time) {
 					
-					if(unvisitedCities.remove(e.EndLocation)) {
+					if(unvisitedCities.remove(e.EndLocationName)) {
 						
-						result.add(e.EndLocation+": "+(e.time+costSoFar)+" minute(s)");
-						result.addAll(G.get(e.EndLocation).citiesReachableTimeNode(time-e.time, unvisitedCities, costSoFar+e.time));
+						result.add(e.EndLocationName+": "+(e.time+costSoFar)+" minute(s)");
+						e.endNode.citiesReachableTimeNode(time-e.time, unvisitedCities, (costSoFar+e.time), result);
 					}
 					
 				}
 				
 			}
-			return result;
 		}
-		public ArrayList<String> citiesReachableDistanceNode(int distance,ArrayList<String> unvisitedCities, int costSoFar){
+		public void citiesReachableDistanceNode(int distance,ArrayList<String> unvisitedCities, int costSoFar, ArrayList<String> result){
 			if(unvisitedCities.isEmpty()) {
-				return unvisitedCities;
+				return;
 			}
-			ArrayList<String> result = new ArrayList<String>();
 			for(Edge e: this.edges) {
 				
 				if(e.distance <= distance) {
 					
-					if(unvisitedCities.remove(e.EndLocation)) {
+					if(unvisitedCities.remove(e.EndLocationName)) {
 						
-						result.add(e.EndLocation+": "+(e.distance+costSoFar)+" mile(s)");
-						result.addAll(G.get(e.EndLocation).citiesReachableDistanceNode(distance-e.distance, unvisitedCities, costSoFar+e.distance));
+						result.add(e.EndLocationName+": "+(e.distance+costSoFar)+" mile(s)");
+						
 					}
+					e.endNode.citiesReachableDistanceNode(distance-e.distance, unvisitedCities, (costSoFar+e.distance), result);
 					
 				}
 				
 			}
-			return result;
+
 		}
-	
 	
 	}
 	
+	public class Edge{
+		public int distance;
+		public int time;
+		public String EndLocationName;
+		public Node endNode;
+		public String StartLocation;
+		public Edge(int d, int t, String StartLocation, Node endLocation) {
+			this.distance = d;
+			this.EndLocationName = endLocation.Label;
+			this.endNode = endLocation;
+			this.StartLocation = StartLocation;
+			this.time = t;
+		}
+		public String toString() {
+			String str = "\n" + StartLocation + "==> distance:"+distance+"==> time:"+time+"==>"+EndLocationName;
+			
+			
+			return str;
+		}
+	}
+
 	
 	public class DijkstraAlgorithm {
 		public ArrayList<Node> nodes;
@@ -166,7 +146,7 @@ public class Graph{
 		
 		public int getDistance(Node n, Node dest) {
 			for(Edge e : edges) {
-				if(getNode(e.StartLocation).equals(n) && getNode(e.EndLocation).equals(dest)) return e.distance;
+				if(getNode(e.StartLocation).equals(n) && getNode(e.EndLocationName).equals(dest)) return e.distance;
 			}
 			throw new NullPointerException();
 		}
@@ -175,8 +155,8 @@ public class Graph{
 		public ArrayList<Node> getNeighbors(Node n){
 			ArrayList<Node> neighbors = new ArrayList<Node>();
 			for(Edge e : edges) {
-				if(getNode(e.StartLocation).equals(n) && !isSettled(getNode(e.EndLocation))) {
-					neighbors.add(getNode(e.EndLocation));
+				if(getNode(e.StartLocation).equals(n) && !isSettled(getNode(e.EndLocationName))) {
+					neighbors.add(getNode(e.EndLocationName));
 				}
 			}
 			return neighbors;
@@ -214,7 +194,6 @@ public class Graph{
 			while(precursors.get(step) != null) {
 				step = precursors.get(step);
 				path.add(step);
-
 			}
 			Collections.reverse(path);
 			return path;
@@ -236,32 +215,40 @@ public class Graph{
 	}
 	public boolean addPath(String start, String end,int d, int t ) {
 		if(!G.containsKey(start)) {
-			Node cityNode = new Node(start);
-			G.put(start, cityNode);
+			Node cityStart = new Node(start);
+			G.put(start, cityStart);
 		}
 		
 		if(!G.containsKey(end)) {
-			Node cityNode = new Node(end);
-			G.put(end, cityNode);
+			Node cityEnd = new Node(end);
+			G.put(end, cityEnd);
 		}
 	
-		G.get(start).addEdge(end, d, t);
+		G.get(start).addEdge(G.get(end), d, t);
 
-		G.get(end).addEdge(start, d, t);
+		G.get(end).addEdge(G.get(start), d, t);
 		return true;
 	}
 	public ArrayList<String> citiesReachableTime(String start, int time){
+		
 		if(!G.containsKey(start)) {
 			throw new IllegalArgumentException("the city - "+start+" does not exsist on map.");
 		}
 		ArrayList<String> unvisitedCities = new ArrayList<String>();
 		for(String x: G.keySet()) {
-			if( x.compareTo(start) != 0) {
+			
+			if(!(x.equals(start))) {
+				
 				unvisitedCities.add(x);
 			}
 		}
+		
+		ArrayList<String> result = new ArrayList<String>();
 		//Note distances will not be shortest just first found
-		return G.get(start).citiesReachableTimeNode(time, unvisitedCities, 0);
+		
+		G.get(start).citiesReachableTimeNode(time, unvisitedCities, 0, result);
+		
+		return result;
 	
 	}
 	public ArrayList<String> citiesReachableDistance(String start, int distance){
@@ -270,12 +257,15 @@ public class Graph{
 		}
 		ArrayList<String> unvisitedCities = new ArrayList<String>();
 		for(String x: G.keySet()) {
-			if( x.compareTo(start) != 0) {
+			if( !(x.equals(start))) {
 				unvisitedCities.add(x);
 			}
 		}
+		//System.out.println(unvisitedCities.remove(start));
 		//Note distances will not shortest just first found. 
-		return G.get(start).citiesReachableDistanceNode(distance, unvisitedCities,0);
+		ArrayList<String> result = new ArrayList<String>();
+		G.get(start).citiesReachableDistanceNode(distance, unvisitedCities,0, result);
+		return result;
 	
 	}
 	
@@ -336,6 +326,24 @@ public class Graph{
 	}
 		return graph;
 	}
+	public ArrayList<Node> getNodes(){
+		ArrayList<Node> list = new ArrayList<Node>();
+		for(String key : G.keySet()) {
+			list.add(G.get(key));
+		}
+		return list;
+	}
+	
+	public ArrayList<Edge> getEdges(){
+		ArrayList<Edge> e = new ArrayList<Edge>();
+		for(Node n : this.getNodes()) {
+			for(Edge f : n.getEdges()) {
+				e.add(f);
+			}
+		}
+		return e;
+	}
+	
 	
 	
 	
