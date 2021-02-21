@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+//edited
 public class Graph{
 	
+	public Node getNode(String s) {
+		return G.get(s);
+	}
 	
 	//Node class that acts as pin point for each city
 	public class Node {
@@ -110,7 +113,7 @@ public class Graph{
 			this.nodes = new ArrayList<Node>(G.getNodes());
 			this.edges = new ArrayList<Edge>(G.getEdges());
 		}
-		//create two HashSets of settled and unsettled nodes, set up algorithm
+		
 		public void begin(Node n) {
 			settledNodes = new HashSet<Node>();
 			unsettledNodes = new HashSet<Node>();
@@ -118,7 +121,6 @@ public class Graph{
 			precursors = new HashMap<Node, Node>();
 			dist.put(n, 0);
 			unsettledNodes.add(n);
-			//find minimum distance between nodes to "settle" them
 			while(unsettledNodes.size() > 0) {
 				Node node = getMin(unsettledNodes);
 				settledNodes.add(node);
@@ -127,6 +129,7 @@ public class Graph{
 			}
 			
 		}
+		
 		public void getMinDistance(Node n) {
 			ArrayList<Node> adjacentNodes = getNeighbors(n);
 			for(Node dest : adjacentNodes) {
@@ -140,17 +143,17 @@ public class Graph{
 		
 		public int getDistance(Node n, Node dest) {
 			for(Edge e : edges) {
-				if(G.get(e.StartLocation).equals(n) && G.get(e.EndLocationName).equals(dest)) return e.distance;
+				if(getNode(e.StartLocation).equals(n) && getNode(e.EndLocationName).equals(dest)) return e.distance;
 			}
 			throw new NullPointerException();
 		}
 		
-		//return an ArrayList of the adjacent nodes to Node n
+		
 		public ArrayList<Node> getNeighbors(Node n){
 			ArrayList<Node> neighbors = new ArrayList<Node>();
 			for(Edge e : edges) {
-				if(G.get(e.StartLocation).equals(n) && !isSettled(G.get(e.EndLocationName))) {
-					neighbors.add(G.get(e.EndLocationName));
+				if(getNode(e.StartLocation).equals(n) && !isSettled(getNode(e.EndLocationName))) {
+					neighbors.add(getNode(e.EndLocationName));
 				}
 			}
 			return neighbors;
@@ -178,7 +181,7 @@ public class Graph{
 		public boolean isSettled(Node n) {
 			return settledNodes.contains(n);
 		}
-		//return an in-order ArrayList of the path from the start to end node
+		
 		public ArrayList<Node> getPath(Node dest){
 			ArrayList<Node> path = new ArrayList<Node>();
 			Node step = dest;
@@ -255,6 +258,7 @@ public class Graph{
 				unvisitedCities.add(x);
 			}
 		}
+		//System.out.println(unvisitedCities.remove(start));
 		//Note distances will not shortest just first found. 
 		ArrayList<String> result = new ArrayList<String>();
 		G.get(start).citiesReachableDistanceNode(distance, unvisitedCities,0, result);
@@ -269,8 +273,8 @@ public class Graph{
 		if(!G.containsKey(end)) throw new IllegalArgumentException("Destination city does not exist.");
 		
 		DijkstraAlgorithm d = new DijkstraAlgorithm(this);
-		d.begin(G.get(start));
-		ArrayList<Node> path = d.getPath(G.get(end));
+		d.begin(getNode(start));
+		ArrayList<Node> path = d.getPath(getNode(end));
 		ArrayList<String> strings = new ArrayList<String>();
 		for(Node n : path) {
 			strings.add(n.Label);
@@ -296,8 +300,8 @@ public class Graph{
 		}
 		//run our algorithm with these "distances"
 		DijkstraAlgorithm d = new DijkstraAlgorithm(this);
-		d.begin(G.get(start));
-		ArrayList<Node> path = d.getPath(G.get(end));
+		d.begin(getNode(start));
+		ArrayList<Node> path = d.getPath(getNode(end));
 		ArrayList<String> strings = new ArrayList<String>();
 		for(Node n : path) {
 			strings.add(n.Label);
