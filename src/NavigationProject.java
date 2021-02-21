@@ -128,6 +128,7 @@ public class NavigationProject {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	//This methods add the new search results onto the JPanel for results.
 	public void addResults(ArrayList<String> locations) {
 		JLabel intro = new JLabel("Result of Search");
 		resultsPanel.add(intro);
@@ -139,6 +140,8 @@ public class NavigationProject {
 		frame.revalidate();
 	}
 	
+	//This methods removes all previous search results and the JPanel for results
+	//and makes a new one with the map locations on it.
 	public void clearResults() {
 		resultsPanel = new JPanel(new GridLayout(30, 1));
 		String totalLocations = "All Locations On Map:    ";
@@ -163,13 +166,13 @@ public class NavigationProject {
 					result.add("Give a Starting Location");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if there is no starting location inputed.
 				}
 				if(searchBar.getText() == null || searchBar.getText().trim().isEmpty()) {
 					result.add("Give a Ending Location");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if there is no ending location inputed.
 				}
 				String searchStarting = searchBarStarting.getText();
 				String searchEnding = searchBar.getText();
@@ -177,26 +180,26 @@ public class NavigationProject {
 					result.add("Can't use the same graph location");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if the starting and ending locations are the same.
 				}
 				ArrayList<String> bothTimeAndDist = new ArrayList<String>();
 				if(graph.getNode(searchStarting) == null) {
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if the starting city isn't on the map.
 				}
 				if(graph.getNode(searchEnding) == null) {
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if the ending city isn't on the map.
 				}
 				if(!distanceCheckBox.isSelected() && !timeCheckBox.isSelected()) {
 					result.add("Select the search type");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if neither check box is selected.
 				}
 				if(distanceCheckBox.isSelected()) {
 					result = graph.getShortestPathDistance(searchStarting, searchEnding);
@@ -253,7 +256,7 @@ public class NavigationProject {
 					result.add("Give a search number");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if there isn't anything inputed in the number JTextField.
 				}
 				int searchedNumber;
 				try {
@@ -262,37 +265,36 @@ public class NavigationProject {
 					result.add("Use an actual number in Seach Bar");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if there isn't a number inputed.
 				}
 				String searchStarting = searchBarStarting.getText();
 				if(graph.getNode(searchStarting) == null) {
 					result.add("Use an actual location in Graph");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if the input isn't on the map.
 				}
 				if(searchStarting == null || searchStarting.trim().isEmpty()) {
 					result.add("Give a Starting Location");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//Give an error if there is no starting city inputed.
 				}
 				if(!distanceCheckBox.isSelected() && !timeCheckBox.isSelected()) {
 					result.add("Select the search type");
 					addResults(result);
 					return;
-					//Make the results panel say this
+					//If neiter checkbox is selected, give an error.
 				}
 				if(distanceCheckBox.isSelected()) {
 					if(timeCheckBox.isSelected()) {
 						result.add("Only have 1 search parameter");
 						addResults(result);
 						return;
-						//Make the results panel say this
+						//If both checkbox are selected, give an error.
 					}
 				}
 				if(distanceCheckBox.isSelected()) {
-					//System.out.println(searchStarting.compareTo("Tacoma"));
 					result = graph.citiesReachableDistance(searchStarting, searchedNumber);
 					addResults(result);
 					return;
@@ -317,13 +319,13 @@ public class NavigationProject {
 				result.add("Input a Starting City");
 				addResults(result);
 				return;
-				//Make the results panel say this
+				//Give an error if there isn't a starting city inputed.
 			}
 			if(endingLocation.getText() == null || endingLocation.getText().trim().isEmpty()) {
 				result.add("Input an Ending City");
 				addResults(result);
 				return;
-				//Make the results panel say this
+				//Give an error if there isn't an ending city inputed.
 			}
 			int distance;
 			try {
@@ -332,7 +334,7 @@ public class NavigationProject {
 				result.add("Use an actual number in Seach Bar");
 				addResults(result);
 				return;
-				//Make the results panel say this
+				//Give an error if there isn't a number inputed.
 			}
 			int time;
 			try {
@@ -341,7 +343,7 @@ public class NavigationProject {
 				result.add("Use an actual number in Seach Bar");
 				addResults(result);
 				return;
-				//Make the results panel say this
+				//Give an error if there isn't a number inputed.
 			}
 			graph.addPath(startingLocation.getText(), endingLocation.getText(), distance, time);
 			result.add("City Has Been Added");
@@ -354,6 +356,7 @@ public class NavigationProject {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			//Removes all selected check boxes, all inputs in JTextFields, and all search results.
 			clearResults();
 			distanceCheckBox.setSelected(false);
 			timeCheckBox.setSelected(false);
